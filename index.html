@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Moss3D's</title>
+
+<!-- FAVICON: this is what shows up in the browser tab, next to the title -->
+<!-- It's the same mountain-peak logo badge, encoded directly as an SVG data URL -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%238ec5fc'/%3E%3Cstop offset='50%25' stop-color='%236a5af9'/%3E%3Cstop offset='100%25' stop-color='%23d66efd'/%3E%3C/linearGradient%3E%3ClinearGradient id='p' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fbc2eb'/%3E%3Cstop offset='100%25' stop-color='%23a18cd1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' fill='%230f0c29' stroke='url(%23r)' stroke-width='6'/%3E%3Cpolygon points='24,68 38,34 52,68' fill='url(%23p)'/%3E%3Cpolygon points='48,68 62,34 76,68' fill='url(%23p)' opacity='0.85'/%3E%3Ccircle cx='50' cy='26' r='6' fill='%23d66efd'/%3E%3C/svg%3E">
+<style>
+  /* Reset default browser spacing so layout is predictable */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* padding/border included in element width, not added on top */
+  }
+
+  /* Page background + centers everything (logo, title, search bar) */
+  body {
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;     /* stack children top to bottom */
+    align-items: center;        /* center horizontally */
+    justify-content: center;    /* center vertically */
+    min-height: 100vh;          /* full screen height */
+    position: relative;         /* lets .orb children use position: absolute inside body */
+    overflow: hidden;           /* hides orb parts that spill outside screen edges */
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  }
+
+  /* Blurred glowing circles floating in the background */
+  .orb {
+    position: absolute;
+    border-radius: 50%;         /* makes it a circle */
+    filter: blur(80px);         /* heavy blur = soft glow look */
+    opacity: 0.55;
+    animation: float 12s ease-in-out infinite;
+  }
+
+  .orb1 { width: 350px; height: 350px; background: #6a5af9; top: -100px; left: -100px; }
+  .orb2 { width: 300px; height: 300px; background: #d66efd; bottom: -80px; right: -80px; animation-delay: 2s; }
+  .orb3 { width: 250px; height: 250px; background: #4a90e2; top: 40%; right: 15%; animation-delay: 4s; }
+
+  /* Animation: orbs drift diagonally and scale up slightly, then return */
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, -30px) scale(1.1); }
+  }
+
+  /* Wrapper holding logo + title + tagline + search bar, above the orbs */
+  .content {
+    position: relative;
+    z-index: 2;                 /* sits above the orbs (which have no z-index, default 0) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo {
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 20px rgba(106, 90, 249, 0.5)); /* soft glow shadow under logo */
+    animation: spinFloat 8s ease-in-out infinite;
+  }
+
+  /* Logo gently bobs up/down and tilts */
+  @keyframes spinFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(3deg); }
+  }
+
+  /* Title text, filled with a gradient instead of a solid color */
+  .site-title {
+    font-size: 3.2rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 45px;
+    background: linear-gradient(90deg, #a18cd1, #fbc2eb, #8ec5fc);
+    -webkit-background-clip: text;  /* clips the gradient background to the text shape */
+    background-clip: text;
+    color: transparent;             /* text itself is invisible, revealing gradient behind it */
+    text-align: center;
+  }
+
+  .tagline {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    margin-top: -35px;
+    margin-bottom: 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* The frosted-glass search bar container */
+  .search-container {
+    display: flex;
+    align-items: center;
+    width: 420px;
+    background: rgba(255, 255, 255, 0.08);       /* barely-visible white tint */
+    backdrop-filter: blur(20px);                 /* blurs whatever is BEHIND this element = glass effect */
+    -webkit-backdrop-filter: blur(20px);          /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;                          /* pill shape */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    padding: 6px 6px 6px 22px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* Hover/focus state: glows and lifts slightly */
+  .search-container:hover,
+  .search-container:focus-within {   /* :focus-within triggers when the <input> inside is focused */
+    box-shadow: 0 12px 40px rgba(106, 90, 249, 0.35);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .search-icon { color: rgba(255, 255, 255, 0.5); font-size: 18px; margin-right: 12px; }
+
+  .search-input {
+    flex: 1;               /* input stretches to fill all remaining space in the flex row */
+    border: none;
+    outline: none;         /* removes default blue focus ring */
+    font-size: 15px;
+    color: #fff;
+    background: transparent;
+  }
+
+  .search-input::placeholder { color: rgba(255, 255, 255, 0.45); }
+
+  .search-button {
+    border: none;
+    background: linear-gradient(135deg, #6a5af9, #d66efd);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px 28px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  }
+
+  .search-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(106, 90, 249, 0.5);
+    filter: brightness(1.08);
+  }
+
+  .footer-note {
+    position: absolute;
+    bottom: 24px;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<!-- Three background glow circles, purely decorative -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="content">
+
+  <!-- LOGO v3: circular emblem with an abstract "M" made from two overlapping mountain-peak triangles -->
+  <svg class="logo" width="90" height="90" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Gradient for the outer ring -->
+      <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#8ec5fc"/>
+        <stop offset="50%" stop-color="#6a5af9"/>
+        <stop offset="100%" stop-color="#d66efd"/>
+      </linearGradient>
+      <!-- Gradient for the "M" peaks -->
+      <linearGradient id="peakGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fbc2eb"/>
+        <stop offset="100%" stop-color="#a18cd1"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Outer circle ring (badge outline), no fill, just a thick colored stroke -->
+    <circle cx="50" cy="50" r="46" fill="#0f0c29" stroke="url(#ringGrad)" stroke-width="4"/>
+
+    <!-- Left peak of the "M" -->
+    <polygon points="24,68 38,34 52,68" fill="url(#peakGrad)"/>
+    <!-- Right peak of the "M", overlapping the left one slightly -->
+    <polygon points="48,68 62,34 76,68" fill="url(#peakGrad)" opacity="0.85"/>
+
+    <!-- Small dot above, representing the "3D" facet / a rising sun over the peaks -->
+    <circle cx="50" cy="26" r="5" fill="#d66efd"/>
+  </svg>
+
+  <h1 class="site-title">THE MOSS3D'S</h1>
+  <p class="tagline">Search the web, instantly</p>
+
+  <!-- Search form: submitting sends the typed text straight to Google Search in a new tab -->
+  <form class="search-container" action="https://www.google.com/search" method="GET" target="_blank">
+    <span class="search-icon">🔍</span>
+    <input type="text" name="q" class="search-input" placeholder="Search anything..." required>
+    <button type="submit" class="search-button">Search</button>
+  </form>
+</div>
+
+<div class="footer-note">© 2026 The Moss3D's</div>
+
+</body>
+</html>
